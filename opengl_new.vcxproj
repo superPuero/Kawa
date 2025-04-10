@@ -180,6 +180,7 @@
     <ClInclude Include="example_project\stages\main_menu\actors\home_button.h" />
     <ClInclude Include="kawa.h" />
     <ClInclude Include="example_project\stages\main_menu\actors\play_button.h" />
+    <ClInclude Include="src\core_scripts\processors_scripts.h" />
     <ClInclude Include="src\debug\assert.h" />
     <ClInclude Include="src\debug\debug.h" />
     <ClInclude Include="src\debug\log.h" />

@@ -4,19 +4,19 @@
 
 namespace kawa
 {
-	struct renderer2d_scripts
+	namespace renderer_scripts
 	{
-		static inline void default_transform_marker_render(transform& tr)
+		inline void default_transform_marker_render(transform& tr)
 		{
 			renderer::push_colored_quad(tr, { 10, 10, -1 }, { -5, -5, -1 }, { 0,0,0,0 });
 		}
 
-		static inline void default_true_collider_render(UUID& uuid, transform& tr, collider2d& cld)
+		inline void default_true_collider_render(UUID& uuid, transform& tr, collider2d& cld)
 		{
 			renderer::push_colored_quad(tr, { cld.size.x, cld.size.y, -1 }, { cld.offset.x, cld.offset.y, -1 }, { 0,0,0,0 });
 		}
 
-		static inline void default_text_render(transform& tr, text_component& tc)	
+		inline void default_text_render(transform& tr, text_component& tc)	
 		{
 			uint32_t pos = 0;
 			glm::vec2 curr_char_pos = { 0,0 };
@@ -64,7 +64,7 @@ namespace kawa
 			}
 		}
 
-		static inline void default_sprite_render(sprite2d& sp, transform& tr)
+		inline void default_sprite_render(sprite2d& sp, transform& tr)
 		{
 			renderer::push_textured_quad
 			(
@@ -76,13 +76,13 @@ namespace kawa
 			);
 		}
 					
-		static inline void default_sprite_bundle_render(sprite2d_bundle& spb, transform& tr)
+		inline void default_sprite_bundle_render(sprite2d_bundle& spb, transform& tr)
 		{
 			default_sprite_render(spb.get_current(), tr);
 		}
 
 
-		static inline void default_tile_map_render(transform& tr, tile_map2d& sp)	
+		inline void default_tile_map_render(transform& tr, tile_map2d& sp)	
 		{
 			for (size_t i = 0; i < sp.map_height; i++)
 			{

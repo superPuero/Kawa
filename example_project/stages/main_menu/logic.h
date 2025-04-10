@@ -11,26 +11,24 @@ namespace main_menu
 { 
 	struct main_menu_script : scene_logic_body
 	{
-		float val = 0;
 		void on_create()
 		{
-			self.query([](script_component& sc) { sc.on_create(); });
+			self.query(processors::script_component_on_create);
 		}
 
 		void on_update(float delta_time)
 		{
-			self.query([](float delta_time, script_component& sc) { sc.on_update(delta_time); }, delta_time);
+			self.query(processors::script_component_on_update, delta_time);
 			self.cleanup();
-			val += delta_time;
 		}
 
 		void on_render()
 		{
-			self.query(renderer2d_scripts::default_sprite_bundle_render);
+			self.query(renderer_scripts::default_sprite_bundle_render);
 			
-			//self.query(renderer2d_scripts::default_true_collider_render);
+			//self.query(renderer_scripts::default_true_collider_render);
 
-			//self.query(renderer2d_scripts::default_transform_marker_render);
+			//self.query(renderer_scripts::default_transform_marker_render);
 		}
 	};
 
@@ -56,7 +54,5 @@ namespace main_menu
 		self.entity_from_prefab(ortho_camera_prefab);
 
 		self.bind<main_menu_script>();
-
-		self.on_create();
 	}
 }

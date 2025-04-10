@@ -14,32 +14,19 @@ namespace shooter
 	{
 		void on_create()
 		{
-
+			self.query(processors::script_component_on_create);
 		}
 
 		void on_update(float delta_time)
 		{
-			self.query([](float delta_time, script_component& sc) { sc.on_update(delta_time); }, delta_time);
-			self.query(
-				[](float delta_time, transform& tr, physics2d& phys)
-				{
-					phys.acceleration = phys.force / phys.mass;					
-
-					phys.velocity += phys.acceleration * delta_time;
-
-					phys.velocity *= (1.0f - phys.drag);
-
-					tr.position.x += phys.velocity.x * delta_time;
-					tr.position.y += phys.velocity.y * delta_time;
-
-				}, delta_time
-			);
+			self.query(processors::script_component_on_update, delta_time);
+			self.query(processors::physics_solver, delta_time);
 		}
 
 		void on_render()
 		{
-			self.query(renderer2d_scripts::default_sprite_render);
-			//self.query(renderer2d_scripts::default_transform_marker_render);
+			self.query(renderer_scripts::default_sprite_render);
+			//self.query(renderer_scripts::default_transform_marker_render);
 		}
 	};
 

@@ -30,6 +30,8 @@ namespace kawa
 		{
 			_scenes[scene_id].prefab(prefab);
 
+			_scenes[scene_id].on_create();
+
 			return *this;
 		}
 

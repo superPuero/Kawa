@@ -197,6 +197,9 @@
     <ClInclude Include="example_project\stages\shooter\actors\bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\core_scripts\processors_scripts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\test_vert.vert" />

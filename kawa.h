@@ -16,6 +16,8 @@
 #include "src/utils/utils.h"
 
 #include "src/core_scripts/renderer_scripts.h"
+#include "src/core_scripts/processors_scripts.h"
+
 
 
 
