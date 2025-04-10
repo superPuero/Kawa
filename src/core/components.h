@@ -3,20 +3,39 @@
 #include <vector>
 
 #include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 #include "macros.h"
 
 #include "../utils/utils.h"
 #include "../renderer/texture.h"
 
+#include "../debug/debug.h"
 
 namespace kawa
 {
 	class scene;
 	class entity;
 
-	struct cube
+	struct transform
 	{
-		vec3 size;
+		vec3 position = { 0,0,0 };
+		vec3 rotation = { 0,0,0 };
+		vec3 scale = { 1.0f, 1.0f, 1.0f };
+
+		inline glm::mat4 get_mat4() const noexcept
+		{
+			glm::mat4 model(1.0f);
+
+			model = glm::translate(model, position);
+
+			model = model * glm::rotate(glm::mat4(1.0f), rotation.z, glm::vec3(0, 0, 1));
+			model = model * glm::rotate(glm::mat4(1.0f), rotation.y, glm::vec3(0, 1, 0));
+			model = model * glm::rotate(glm::mat4(1.0f), rotation.x, glm::vec3(1, 0, 0));
+
+			model = glm::scale(model, scale);
+
+			return model;
+		}
 	};
 
 	struct text_component
@@ -33,8 +52,26 @@ namespace kawa
 	struct sprite2d
 	{
 		texture* tex;
-		std::array<vec2, 4> texture_coords;
 		vec2 size;
+		vec2 offset;
+		std::array<vec2, 4> texture_coords;
+
+		inline void make_centred()
+		{
+			offset = { -size.x / 2, -size.y / 2 };
+		}
+
+		inline texture& get_texture() noexcept
+		{
+			if (tex)
+			{
+				return *tex;
+			}
+			else
+			{
+				KW_LOG_ERROR("No texture in sprite");
+			}
+		}
 	};
 
 	struct sprite2d_bundle
@@ -61,10 +98,24 @@ namespace kawa
 		inline sprite2d_bundle& put(
 			size_t id,
 			texture* tex,
-			const std::array<vec2, 4>& texture_coords,
-			const vec2& size)
+			const vec2& size,
+			const vec2& offset,
+			const std::array<vec2, 4>& texture_coords
+			)
 		{
-			new(bundle + id) sprite2d{ tex, texture_coords, size };
+			new(bundle + id) sprite2d{ tex, size, offset, texture_coords };
+
+			return *this;
+		}
+
+		inline sprite2d_bundle& put_centered(
+			size_t id,
+			texture* tex,
+			const vec2& size,
+			const std::array<vec2, 4>& texture_coords
+		)
+		{
+			new(bundle + id) sprite2d{ tex, size, {-size.x / 2, -size.y / 2}, texture_coords };
 
 			return *this;
 		}
@@ -72,6 +123,11 @@ namespace kawa
 		inline void set_current(size_t id) noexcept
 		{
 			current = id;
+		}
+
+		inline sprite2d& get_current() noexcept
+		{
+			return bundle[current];
 		}
 
 		sprite2d* bundle;
@@ -234,7 +290,7 @@ namespace kawa
 		{
 			if (!(idx < bundle_size))
 			{
-				std::cout << "out of bounds animation bundle access" << '\n';
+				KW_LOG_CRITICAL_ERROR("out of bounds animation bundle access");
 				return *this;
 			}
 
@@ -374,7 +430,12 @@ namespace kawa
 		vec2 size;
 		vec2 offset;
 
-		static inline bool is_point_inside(const vec2& point, const transform2d& tr_a, const collider2d& a)
+		inline void make_centered() noexcept
+		{
+			offset = { -size.x / 2, -size.y / 2 };
+		}
+
+		static inline bool is_point_inside(const vec2& point, const transform& tr_a, const collider2d& a)
 		{
 			return	tr_a.position.x + a.offset.x + a.size.x > point.x &&
 					tr_a.position.x + a.offset.x			< point.x &&
@@ -382,7 +443,7 @@ namespace kawa
 					tr_a.position.y + a.offset.y			< point.y;
 		}
 
-		static inline bool is_colliding(const transform2d& tr_a, const transform2d& tr_b, const collider2d& a, const collider2d& b)
+		static inline bool is_colliding(const transform2d& tr_a, const transform& tr_b, const collider2d& a, const collider2d& b)
 		{
 			return	tr_a.position.x + a.offset.x + a.size.x > tr_b.position.x + b.offset.x				&&
 					tr_a.position.x + a.offset.x			< tr_b.position.x + b.offset.x + b.size.x	&&
@@ -405,10 +466,37 @@ namespace kawa
 			((uint32_t*)&id)[0] = rand();
 			((uint32_t*)&id)[1] = rand();
 		}
-
-		~UUID()
-		{
-			std::cout << "deleted: " << id << '\n';
-		}
 	};
 }
+
+struct callback_component
+{
+	~callback_component()
+	{
+		delete _callback_body;
+		_callback = nullptr;
+	}
+
+	template<typename Fn>
+	void bind(Fn callback)
+	{
+		_callback_body = new Fn(std::forward<Fn>(callback));
+		_callback = [](void* fn)
+			{
+				(*static_cast<Fn*>(fn))();
+			};
+	}
+
+	void invoke()
+	{
+		if(_callback)
+		{
+			_callback(_callback_body);
+		}
+	}
+		
+public:
+	void(*_callback)(void*);
+	void* _callback_body;
+
+};

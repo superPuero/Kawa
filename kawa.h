@@ -4,6 +4,9 @@
 #include "src/core/components.h"
 #include "src/core/serealizer.h"
 #include "src/core/deserealizer.h"
+#include "src/core/log/log.h"
+
+#include "src/debug/debug.h"
 
 #include "src/renderer/renderer.h"
 

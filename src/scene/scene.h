@@ -23,10 +23,11 @@ namespace kawa
 
         ~scene()
         {
-
+            _logic_body_deleter(_scene_logic_body);
         }
 
     public:
+
         void on_update(float delta_time) noexcept
         {
             on_update_func(_scene_logic_body, delta_time);
@@ -39,7 +40,7 @@ namespace kawa
         {
             on_render_func(_scene_logic_body);
         }
-
+            
         inline void fetch_remove(ssr::entity_id id) noexcept
         {
             _to_clear.push_back(id);
@@ -95,7 +96,7 @@ namespace kawa
             return _ctx;
         }
 
-        inline void entity_from_prefab(void(prefab_func)(scene&, entity&)) noexcept
+        inline scene& entity_from_prefab(void(prefab_func)(scene&, entity&)) noexcept
         {
             auto e = entity(_ctx);
 
@@ -104,6 +105,8 @@ namespace kawa
             _entity_container.emplace(id, std::move(e));
 
             prefab_func(*this, _entity_container.at(id));
+
+            return *this;
         }
 
         template<typename SceneScriptBody>

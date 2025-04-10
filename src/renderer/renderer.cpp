@@ -1,9 +1,10 @@
-#include "renderer.h"
 #include <new>
+
+#include "renderer.h"
+#include "../debug/debug.h"
 
 namespace kawa
 {
-
 	void renderer::init()
 	{
 		glEnable(GL_BLEND);
@@ -52,8 +53,32 @@ namespace kawa
 		renderer::load_texture("assets/white_test.png", "white");
 		renderer::load_texture("assets/font/monogram-bitmap.png", "test_font");
 
-	};
+	}
+	void renderer::push_true_quad(const texture& texture, const std::array<vec2, 4>& texture_coords, const vec3& size, const vec3& offset, const transform& transform)
+	{
 
+		glm::mat4 mat_transform = transform.get_mat4();
+
+		auto data_ptr = _data_buffer + _data_occupied;
+		auto index_ptr = _index_buffer + _index_occupied;
+
+
+		new(data_ptr + 0) vertex{ mat_transform * glm::vec4{ + offset.x, + offset.y, + offset.z, 1 }, texture_coords[0], texture._handle_idx };
+		new(data_ptr + 1) vertex{ mat_transform * glm::vec4{ + size.x + offset.x, + offset.y, + offset.z, 1 }, texture_coords[1], texture._handle_idx };
+		new(data_ptr + 2) vertex{ mat_transform * glm::vec4{ + size.x + offset.x, + size.y + offset.y, + size.z + offset.z, 1 }, texture_coords[2], texture._handle_idx };
+		new(data_ptr + 3) vertex{ mat_transform * glm::vec4{ + offset.x, + size.y + offset.y, + size.z + offset.z, 1 }, texture_coords[3], texture._handle_idx };
+
+		_data_occupied += 4;
+
+		new(index_ptr + 0) uint32_t(0 + _data_occupied - 4);
+		new(index_ptr + 1) uint32_t(2 + _data_occupied - 4);
+		new(index_ptr + 2) uint32_t(1 + _data_occupied - 4);
+		new(index_ptr + 3) uint32_t(0 + _data_occupied - 4);
+		new(index_ptr + 4) uint32_t(3 + _data_occupied - 4);
+		new(index_ptr + 5) uint32_t(2 + _data_occupied - 4);
+
+		_index_occupied += 6;
+	};
 
 
 	void renderer::push_textured_quad(const texture& texture, const std::array<vec2, 4>& texture_coords, const vec3& pos, const vec3& offset)
@@ -65,6 +90,31 @@ namespace kawa
 		new(data_ptr + 1) vertex{ { pos.x + offset.x, pos.y, pos.z  }, texture_coords[1], texture._handle_idx };
 		new(data_ptr + 2) vertex{ { pos.x + offset.x, pos.y + offset.y , pos.z + offset.z }, texture_coords[2], texture._handle_idx };
 		new(data_ptr + 3) vertex{ { pos.x , pos.y + offset.y, pos.z + offset.z }, texture_coords[3], texture._handle_idx };
+
+		_data_occupied += 4;
+
+		new(index_ptr + 0) uint32_t(0 + _data_occupied - 4);
+		new(index_ptr + 1) uint32_t(2 + _data_occupied - 4);
+		new(index_ptr + 2) uint32_t(1 + _data_occupied - 4);
+		new(index_ptr + 3) uint32_t(0 + _data_occupied - 4);
+		new(index_ptr + 4) uint32_t(3 + _data_occupied - 4);
+		new(index_ptr + 5) uint32_t(2 + _data_occupied - 4);
+
+		_index_occupied += 6;
+	}
+
+	void renderer::push_true_colored_quad(const transform& transform, const vec3& size, const vec3& offset, const Color& color)
+	{
+		glm::mat4 mat_transform = transform.get_mat4();
+
+		auto data_ptr = _data_buffer + _data_occupied;
+		auto index_ptr = _index_buffer + _index_occupied;
+
+
+		new(data_ptr + 0) vertex{ mat_transform * glm::vec4{ +offset.x, +offset.y, +offset.z, 1 }, vec2{ 0.0f, 0.0f}, 0 };
+		new(data_ptr + 1) vertex{ mat_transform * glm::vec4{ +size.x + offset.x, +offset.y, +offset.z, 1 }, vec2{ 1.0f, 0.0f }, 0 };
+		new(data_ptr + 2) vertex{ mat_transform * glm::vec4{ +size.x + offset.x, +size.y + offset.y, +size.z + offset.z, 1 }, vec2{ 1.0f, 1.0f }, 0 };
+		new(data_ptr + 3) vertex{ mat_transform * glm::vec4{ +offset.x, +size.y + offset.y, +size.z + offset.z, 1 }, vec2{ 0.0f, 1.0f }, 0 };
 
 		_data_occupied += 4;
 
@@ -150,16 +200,18 @@ namespace kawa
 
 	void renderer::shutdown()
 	{
-		if (_data_buffer && _index_buffer && _texture_handles)
+		if (_data_buffer)
 		{
 			delete[] _data_buffer;
-			delete[] _index_buffer;
-			delete[] _texture_handles;
+			_data_buffer = nullptr;
 		}
 
-		_data_buffer = nullptr;
-		_index_buffer = nullptr;
-		_texture_handles = nullptr;
+		if (_index_buffer)
+		{			
+			delete[] _index_buffer;
+			_index_buffer = nullptr;
+		}
+
 
 	}
 
@@ -175,20 +227,28 @@ namespace kawa
 			if (_texture_handles[i] == -1)
 			{
 				textures.emplace(name, filepath);
-				uint64_t handle = glGetTextureHandleARB(textures[name]._id);
-				glMakeTextureHandleResidentARB(handle);
+				
+				if(textures[name]._data)
+				{
+					uint64_t handle = glGetTextureHandleARB(textures[name]._id);
+					glMakeTextureHandleResidentARB(handle);
 
-				_texture_handles[i] = handle;
-				textures[name]._handle_idx = i;
-				textures[name]._name = name;
+					_texture_handles[i] = handle;
+					textures[name]._handle_idx = i;
+					textures[name]._name = name;
 
-				glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
-				glBufferSubData(GL_SHADER_STORAGE_BUFFER,
-					i * sizeof(uint64_t),
-					sizeof(uint64_t),
-					&handle);
+					glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+					glBufferSubData(GL_SHADER_STORAGE_BUFFER,
+						i * sizeof(uint64_t),
+						sizeof(uint64_t),
+						&handle);
 
-				std::cout << "Loaded texture " << name << " with ID: " << textures[name]._id << " into slot " << textures[name]._handle_idx << '\n';
+					KW_LOG("Loaded texture", name, "with ID:", textures[name]._id, "into slot", textures[name]._handle_idx);
+				}
+				else
+				{
+					KW_LOG_ERROR("Unable to load texture", name);
+				}
 
 				return;
 			}
@@ -210,7 +270,7 @@ namespace kawa
 
 		textures.erase(name);
 
-		std::cout << "Unloaded texture " << name << '\n';
+		KW_LOG("Unloaded texture");
 
 	}
 

@@ -3,6 +3,8 @@
 #include "../core/data_structures/dynamic_registry.h"
 #include "../core/data_structures/ssrutils.h"
 
+#include "../debug/debug.h"
+
 namespace kawa
 {
 	class entity
@@ -15,7 +17,7 @@ namespace kawa
 
 			if (_id == ssr::nullent)
 			{
-				std::cout << "bad entity" << '\n';
+				KW_LOG_ERROR("bad entity");
 			}		
 
 		}
@@ -32,7 +34,7 @@ namespace kawa
 			if (_id != ssr::nullent)
 			{
 				_ctx.destroy(_id);
-				std::cout << "dest" << _id << '\n';
+				KW_LOG("Destroyed entity: ", _id);
 			}
 		}
 

@@ -6,7 +6,7 @@
 
 #include "components.h"
 #include "../renderer/renderer.h"
-#include "../../test_project/scripts/main_menu/actors.h"
+#include "../debug/debug.h"
 
 namespace kawa
 {
@@ -21,7 +21,7 @@ namespace kawa
 		template<typename T, typename...Args>
 		void parse(T& dest, Args&&...args)
 		{
-			std::cout << "no deserealizer impl for " << typeid(T).name();
+			KW_LOG_ERROR("no deserealizer impl for ", typeid(T).name());
 		}
 
 		bool is_current(const char* val)
@@ -81,34 +81,34 @@ namespace kawa
 		}
 	}
 
-	template<>
-	inline void deserealizer::parse(script_component& dest, scene& s, entity& e)
-	{
-		uint64_t script_hash;
-		_input >> script_hash;
+	//template<>
+	//inline void deserealizer::parse(script_component& dest, scene& s, entity& e)
+	//{
+	//	uint64_t script_hash;
+	//	_input >> script_hash;
 
-		std::cout << "here" << '\n';
+	//	std::cout << "here" << '\n';
 
-		if (script_hash == typeid(main_menu::play_button_script).hash_code())
-		{
-			dest._script_body = new main_menu::play_button_script(s, e);
-		}
+	//	if (script_hash == typeid(main_menu::play_button_script).hash_code())
+	//	{
+	//		dest._script_body = new main_menu::play_button_script(s, e);
+	//	}
 
-		else if (script_hash == typeid(main_menu::home_button_script).hash_code())
-		{
-			dest._script_body = new main_menu::home_button_script(s, e);
-		}
+	//	else if (script_hash == typeid(main_menu::home_button_script).hash_code())
+	//	{
+	//		dest._script_body = new main_menu::home_button_script(s, e);
+	//	}
 
-		else if (script_hash == typeid(main_menu::bit_script).hash_code())
-		{
-			dest._script_body = new main_menu::bit_script(s, e);
-		}
+	//	else if (script_hash == typeid(main_menu::bit_script).hash_code())
+	//	{
+	//		dest._script_body = new main_menu::bit_script(s, e);
+	//	}
 
-		else if (script_hash == typeid(main_menu::ortho_camera_script).hash_code())
-		{
-			dest._script_body = new main_menu::ortho_camera_script(s, e);
-		}
-	}
+	//	else if (script_hash == typeid(main_menu::ortho_camera_script).hash_code())
+	//	{
+	//		dest._script_body = new main_menu::ortho_camera_script(s, e);
+	//	}
+	//}
 
 	template<>
 	inline void deserealizer::parse(camera_component& dest)

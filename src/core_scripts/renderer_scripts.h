@@ -6,12 +6,22 @@ namespace kawa
 {
 	struct renderer2d_scripts
 	{
+		static inline void default_transform_marker_render(transform& tr)
+		{
+			renderer::push_true_colored_quad(tr, { 10, 10, -1 }, { -5, -5, -1 }, { 0,0,0,0 });
+		}
+
 		static inline void default_collider_render(UUID& uuid, transform2d& tr, collider2d& cld) 
 		{
 			renderer::push_colored_quad({ 0,0,0,0 }, { tr.position.x + cld.offset.x  , tr.position.y + cld.offset.y, -1 }, { cld.size.x ,cld.size.y , -1 });
 		}
 
-		static inline void default_text_render(transform2d& tr, text_component& tc)	
+		static inline void default_true_collider_render(UUID& uuid, transform& tr, collider2d& cld)
+		{
+			renderer::push_true_colored_quad(tr, { cld.size.x, cld.size.y, -1 }, { cld.offset.x, cld.offset.y, -1 }, { 0,0,0,0 });
+		}
+
+		static inline void default_text_render(transform& tr, text_component& tc)	
 		{
 			uint32_t pos = 0;
 			glm::vec2 curr_char_pos = { 0,0 };
@@ -58,67 +68,64 @@ namespace kawa
 			}
 		}
 
-		static inline void default_sprite_render(sprite2d& sp, transform2d& tr)	
+		static inline void default_sprite_render(sprite2d& sp, transform& tr)
 		{
-			renderer::push_textured_quad
+			renderer::push_true_quad
 			(
-				*sp.tex,
+				sp.get_texture(),
 				sp.texture_coords,
-				{ tr.position.x, tr.position.y, -1 },
-				{ sp.size.x, sp.size.y, 0 }
+				{ sp.size.x, sp.size.y, -1 },
+				{ sp.offset.x, sp.offset.y, -1},
+				tr
 			);
 		}
-
-		static inline void default_sprite_bundle_render(sprite2d_bundle& spb, transform2d& tr) 
+					
+		static inline void default_sprite_bundle_render(sprite2d_bundle& spb, transform& tr)
 		{
-			auto& sp = spb.bundle[spb.current];
-
-			renderer::push_textured_quad
-			(
-				*sp.tex,
-				sp.texture_coords,
-				{ tr.position.x, tr.position.y, -1 },
-				{ sp.size.x, sp.size.y, 0 }
-			);
+			default_sprite_render(spb.get_current(), tr);
 		}
 
-		static inline void default_tile_map_render(transform2d& tr, tile_map2d& sp)	
+
+		static inline void default_tile_map_render(transform& tr, tile_map2d& sp)	
 		{
 			for (size_t i = 0; i < sp.map_height; i++)
 			{
 				for (size_t j = 0; j < sp.map_width; j++)
 				{
-					renderer::push_textured_quad
+					renderer::push_true_quad
 					(
 						sp.tex_source,
 						sp.tile_texture_coords[j + (i * sp.map_width)],
-						{ tr.position.x + sp.tile_screen_size.x * j, tr.position.y + sp.tile_screen_size.y * i, -1 },
-						{ sp.tile_screen_size.x, sp.tile_screen_size.y, 0 }
+						{ sp.tile_screen_size.x * j, sp.tile_screen_size.y * i, -1 },
+						{ sp.tile_screen_size.x, sp.tile_screen_size.y, 0 }	,
+						tr
 					);
 				}
 			}
 		}
 
-		static inline  void default_anim_sprite_render(transform2d& tr, anim_sprite2d& sp) 
-		{
-			renderer::push_textured_quad
-			(
-				sp.tex_source,
-				sp.frames_texture_coords[sp.frame_current],
-				{ tr.position.x, tr.position.y, -1 },
-				{ sp.frame_screen_size.x, sp.frame_screen_size.y, 0 }
-			);
-		}
+		//static inline void default_anim_sprite_render(transform& tr, anim_sprite2d& sp) 
+		//{
+		//	renderer::push_true_quad
+		//	(
+		//		sp.tex_source,
+		//		sp.frames_texture_coords[sp.frame_current],
+		//		{ sp., 0, -1 },
+		//		{ sp.frame_screen_size.x, sp.frame_screen_size.y, 0 },
+		//		tr
+		//	);
+		//}
 
-		static inline void default_anim_sprite_bundle_render(transform2d& tr, anim_sprite2d_bundle& sp)	
-		{
-			renderer::push_textured_quad
-			(
-				sp.current().tex_source,
-				sp.current().frames_texture_coords[sp.current().frame_current],
-				{ tr.position.x, tr.position.y, -1 },
-				{ sp.current().frame_screen_size.x, sp.current().frame_screen_size.y, 0 }
-			);
-		}
+		//static inline void default_anim_sprite_bundle_render(transform& tr, anim_sprite2d_bundle& sp)
+		//{
+		//	renderer::push_true_quad
+		//	(
+		//		sp.current().tex_source,
+		//		sp.current().frames_texture_coords[sp.current().frame_current],
+		//		{ 0, 0, -1 },
+		//		{ sp.current().frame_screen_size.x, sp.current().frame_screen_size.y, 0 },
+		//		tr
+		//	);
+		//}
 	};
 }

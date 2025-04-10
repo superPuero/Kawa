@@ -1,6 +1,9 @@
+#include <iostream>
+
 #include "texture.h"
 #include "../../vendors/stb/stb_image.h"
-#include <iostream>
+#include "../debug/debug.h"
+
 
 namespace kawa
 {
@@ -64,8 +67,8 @@ namespace kawa
 
 		if (!_data)
 		{
-			std::cout << "ERROR: loading texture from " << filepath << " failed" << '\n';
-		}
+			KW_LOG_ERROR("Unable to load texture from", filepath);
+		}					   
 
 		glCreateTextures(GL_TEXTURE_2D, 1, &_id);
 		glBindTexture(GL_TEXTURE_2D, _id);

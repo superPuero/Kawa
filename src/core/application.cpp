@@ -12,14 +12,7 @@
 
 #include "../scene/scene.h"
 
-#include "../../test_project/scripts/game/logic.h"
-#include "../../test_project/scripts/game/actors.h"
-
-#include "../../test_project/scripts/main_menu/logic.h"
-#include "../../test_project/scripts/main_menu/actors.h"
-
-
-//#include "../../test_scene.h"
+#include "../debug/debug.h"
 
 namespace kawa
 {
@@ -29,9 +22,12 @@ namespace kawa
 			_scenes(new scene[scenes_ammout]),
 			_current_scene(0)
 	{
+		KW_LOG("Application initialized");
+
 		application_instance = this;
 		window_instange = &_window;
 		renderer::init();
+
 	}
 
 	application& application::create(const char* name, size_t scenes_ammout)

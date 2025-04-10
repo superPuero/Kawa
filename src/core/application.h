@@ -5,8 +5,6 @@
 
 namespace kawa
 {
-	class scene;
-			
 	class application
 	{
 	public:
@@ -28,9 +26,11 @@ namespace kawa
 			_window.close();
 		}
 
-		void scene_from_prefab(size_t scene_id, void(prefab)(scene&))
+		application& scene_from_prefab(size_t scene_id, void(prefab)(scene&))
 		{
 			_scenes[scene_id].prefab(prefab);
+
+			return *this;
 		}
 
 

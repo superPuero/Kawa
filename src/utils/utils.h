@@ -5,6 +5,8 @@
 #include <glm.hpp>
 #include "../../vendors/stb/stb_image.h"
 
+#include "../debug/debug.h"
+
 typedef glm::vec2 vec2;
 typedef glm::vec3 vec3;
 
@@ -22,8 +24,9 @@ namespace kawa
 	{
         std::ifstream file(filepath, std::ios::binary);
 
-        if (!file) {
-            std::cout << "Could not open file: " << filepath << '\n';
+        if (!file) 
+        {
+            KW_LOG_ERROR("Unbale to open file", filepath);
         }
 
         file.seekg(0, std::ios::end);        

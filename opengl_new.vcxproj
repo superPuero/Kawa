@@ -119,6 +119,7 @@
       <IntrinsicFunctions>false</IntrinsicFunctions>
       <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
       <AdditionalOptions>/Zc:preprocessor %(AdditionalOptions)</AdditionalOptions>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -170,7 +171,26 @@
     <ClCompile Include="vendors\stb\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\core\log\log.h" />
+    <ClInclude Include="src\core\log\log_defaults.h" />
+    <ClInclude Include="src\core\log\log_enums.h" />
+    <ClInclude Include="src\core\log\log_getters.h" />
+    <ClInclude Include="test_project\scripts\game\actors\block.h" />
+    <ClInclude Include="test_project\scripts\game\actors\block2.h" />
+    <ClInclude Include="test_project\scripts\game\actors\coin.h" />
+    <ClInclude Include="test_project\scripts\game\actors\counter.h" />
+    <ClInclude Include="test_project\scripts\game\actors\player1.h" />
+    <ClInclude Include="test_project\scripts\game\actors\player2.h" />
+    <ClInclude Include="test_project\scripts\game\actors\spam.h" />
+    <ClInclude Include="test_project\scripts\game\actors\text.h" />
+    <ClInclude Include="test_project\scripts\main_menu\actors\bit.h" />
+    <ClInclude Include="test_project\scripts\main_menu\actors\home_button.h" />
     <ClInclude Include="kawa.h" />
+    <ClInclude Include="test_project\scripts\main_menu\actors\play_button.h" />
+    <ClInclude Include="src\debug\assert.h" />
+    <ClInclude Include="src\debug\debug.h" />
+    <ClInclude Include="src\debug\log.h" />
+    <ClInclude Include="src\debug\platform_detect.h" />
     <ClInclude Include="src\scene\scene_logic_body.h" />
     <ClInclude Include="src\core\deserealizer.h" />
     <ClInclude Include="src\core\serealizer.h" />
@@ -180,13 +200,12 @@
     <ClInclude Include="src\scene\scene.h" />
     <ClInclude Include="src\core\data_structures\dynamic_registry.h" />
     <ClInclude Include="test_project\kawa_test_project.h" />
-    <ClInclude Include="test_project\scripts\main_menu\actors.h" />
     <ClInclude Include="test_project\scripts\main_menu\logic.h" />
     <ClInclude Include="src\core\data_structures\sentinel_set.h" />
     <ClInclude Include="src\core\data_structures\dense_set.h" />
     <ClInclude Include="src\core\macros.h" />
     <ClInclude Include="src\core_scripts\renderer_scripts.h" />
-    <ClInclude Include="test_project\scripts\game\actors.h" />
+    <ClInclude Include="test_project\scripts\game\actors\actors.h" />
     <ClInclude Include="src\scene\entity.h" />
     <ClInclude Include="src\core\window.h" />
     <ClInclude Include="src\core\application.h" />
@@ -198,6 +217,11 @@
     <ClInclude Include="src\utils.h" />
     <ClInclude Include="src\renderer\texture.h" />
     <ClInclude Include="test_project\scripts\game\logic.h" />
+    <ClInclude Include="test_project\scripts\shared\ortho_camera.h" />
+    <ClInclude Include="test_project\scripts\shooter\actors\asteroid.h" />
+    <ClInclude Include="test_project\scripts\shooter\actors\background.h" />
+    <ClInclude Include="test_project\scripts\shooter\logic.h" />
+    <ClInclude Include="test_project\scripts\shooter\actors\ship.h" />
     <ClInclude Include="vendors\stb\stb_image.h" />
   </ItemGroup>
   <ItemGroup>

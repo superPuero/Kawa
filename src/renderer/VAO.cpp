@@ -4,7 +4,9 @@ namespace kawa
 {
 
 	VAO::VAO()
-	{}
+	{
+
+	}
 
 	void VAO::create()
 	{
