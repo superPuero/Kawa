@@ -22,15 +22,15 @@ namespace kawa
 			vec2 mouse_pos;
 			application::application_instance->_window.get_mouse_pos(mouse_pos.x, mouse_pos.y);
 
-			vec2 direction = mouse_pos - vec2{ tr.position };
+			vec2 direction = glm::normalize(mouse_pos - vec2{ tr.position });
 
 			tr.rotation.z = std::atan2(direction.y, direction.x) - glm::pi<float>()/2;
 
 
 			if (application::application_instance->_window.is_key_down(GLFW_KEY_W))
 			{
-				phys.force.x = direction.x * 2;
-				phys.force.y = direction.y * 2;
+				phys.force.x = direction.x * 3000;
+				phys.force.y = direction.y * 3000;
 			}
 			else
 			{
@@ -39,7 +39,7 @@ namespace kawa
 		}		  
 	};
 
-	void ship_preafab(scene& context, entity& self)
+	void ship_preafab(entity& self)
 	{
 		self.emplace<UUID>();
 		self.emplace<transform>
@@ -62,7 +62,7 @@ namespace kawa
 
 		self.emplace<physics2d>();
 
-		self.emplace<script_component>().bind<ship_script>(context, self);
+		self.emplace<script_component>().bind<ship_script>(self);
 
 	}
 

@@ -98,9 +98,6 @@
     <ClInclude Include="src\scene\entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\actors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="vendors\stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -125,9 +122,6 @@
     <ClInclude Include="src\scene\scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\game\logic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\renderer\VAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -137,7 +131,7 @@
     <ClInclude Include="src\utils\utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\main_menu\logic.h">
+    <ClInclude Include="example_project\stages\main_menu\logic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\serealizer.h">
@@ -152,9 +146,6 @@
     <ClInclude Include="src\scene\scene_logic_body.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\kawa_test_project.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\debug\debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -167,13 +158,13 @@
     <ClInclude Include="src\debug\log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\main_menu\actors\bit.h">
+    <ClInclude Include="example_project\stages\main_menu\actors\bit.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\main_menu\actors\play_button.h">
+    <ClInclude Include="example_project\stages\main_menu\actors\play_button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\main_menu\actors\home_button.h">
+    <ClInclude Include="example_project\stages\main_menu\actors\home_button.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\core\log\log.h">
@@ -188,43 +179,22 @@
     <ClInclude Include="src\core\log\log_getters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\player1.h">
+    <ClInclude Include="example_project\stages\shared\ortho_camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\player2.h">
+    <ClInclude Include="example_project\stages\shooter\logic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\coin.h">
+    <ClInclude Include="example_project\stages\shooter\actors\ship.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\block.h">
+    <ClInclude Include="example_project\stages\shooter\actors\background.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\counter.h">
+    <ClInclude Include="example_project\stages\shooter\actors\asteroid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\text.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\spam.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="test_project\scripts\game\actors\block2.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="test_project\scripts\shared\ortho_camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="test_project\scripts\shooter\logic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="test_project\scripts\shooter\actors\ship.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="test_project\scripts\shooter\actors\background.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="test_project\scripts\shooter\actors\asteroid.h">
+    <ClInclude Include="example_project\stages\shooter\actors\bullet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

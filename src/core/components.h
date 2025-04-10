@@ -11,11 +11,10 @@
 
 #include "../debug/debug.h"
 
+#include "../scene/entity.h"
+
 namespace kawa
 {
-	class scene;
-	class entity;
-
 	struct transform
 	{
 		vec3 position = { 0,0,0 };
@@ -42,11 +41,6 @@ namespace kawa
 	{
 		std::string data;
 		vec2 size;
-	};
-
-	struct transform2d
-	{
-		vec2 position;
 	};
 
 	struct sprite2d
@@ -157,9 +151,6 @@ namespace kawa
 
 		~tile_map2d()
 		{
-			//delete[] tile_texture_coords;
-			//tile_texture_coords = nullptr;
-
 
 		}
 
@@ -177,8 +168,6 @@ namespace kawa
 		vec2 tile_block_size;
 
 		std::vector<std::array<vec2, 4>> tile_texture_coords;
-
-		//std::array<vec2, 4>* tile_texture_coords;
 	};
 
 	template<size_t frame_count>
@@ -320,8 +309,6 @@ namespace kawa
 		float time;
 	};
 
-	//BETTER_ENUM(script_tag, uint32_t, none, hume_button, exit_button, camera, bit);
-
 	struct script_component
 	{
 		~script_component()
@@ -335,9 +322,9 @@ namespace kawa
 
 		struct script_base
 		{
-			script_base(scene& s, entity& e)
-				:	context(s),
-					self(e)
+			script_base(entity& e)
+				: self(e)
+				, context(e.get_scene())
 			{}
 
 			virtual ~script_base() {}
@@ -352,9 +339,9 @@ namespace kawa
 		};
 
 		template<typename ScriptBody>
-		void bind(scene& s, entity& e) noexcept
+		void bind(entity& self) noexcept
 		{
-			_script_body = new ScriptBody( s, e );
+			_script_body = new ScriptBody(self);
 		}
 
 		void on_create() noexcept
@@ -382,39 +369,13 @@ namespace kawa
 		glm::mat4 view;
 	};
 
-	struct transform3d
-	{
-		transform3d() = default;
-
-		transform3d(vec3&& vec)
-		{
-			position = vec;
-		}
-
-
-		transform3d(vec3&& vec, vec3&& vec2)
-		{
-			position = vec;
-			rotation = vec2;
-		}
-
-		vec3 position;
-		vec3 rotation;
-		vec3 front;
-	};
-
 	struct physics2d
 	{
-		vec2 velocity;
 		vec2 force;
-		float mass;
-		float gravity;
-		bool on_ground;
-	};
-
-	struct physics3d
-	{
-		vec3 velocity;
+		vec2 acceleration;
+		vec2 velocity;
+		float mass = 1;
+		float drag = 0.01;
 	};
 
 	struct Color
@@ -443,7 +404,7 @@ namespace kawa
 					tr_a.position.y + a.offset.y			< point.y;
 		}
 
-		static inline bool is_colliding(const transform2d& tr_a, const transform& tr_b, const collider2d& a, const collider2d& b)
+		static inline bool is_colliding(const transform& tr_a, const transform& tr_b, const collider2d& a, const collider2d& b)
 		{
 			return	tr_a.position.x + a.offset.x + a.size.x > tr_b.position.x + b.offset.x				&&
 					tr_a.position.x + a.offset.x			< tr_b.position.x + b.offset.x + b.size.x	&&

@@ -23,10 +23,12 @@ namespace shooter
 			self.query(
 				[](float delta_time, transform& tr, physics2d& phys)
 				{
-					phys.velocity += phys.force;
+					phys.acceleration = phys.force / phys.mass;					
 
-					phys.velocity *= 0.9;
-					
+					phys.velocity += phys.acceleration * delta_time;
+
+					phys.velocity *= (1.0f - phys.drag);
+
 					tr.position.x += phys.velocity.x * delta_time;
 					tr.position.y += phys.velocity.y * delta_time;
 
@@ -38,7 +40,6 @@ namespace shooter
 		{
 			self.query(renderer2d_scripts::default_sprite_render);
 			//self.query(renderer2d_scripts::default_transform_marker_render);
-
 		}
 	};
 
@@ -55,10 +56,8 @@ namespace shooter
 
 		self.entity_from_prefab(ortho_camera_prefab);
 
-
 		self.entity_from_prefab(background_prefab);
 		self.entity_from_prefab(ship_preafab);
-
 
 		self.entity_from_prefab(asteroid_prefab);
 		self.entity_from_prefab(asteroid_prefab);

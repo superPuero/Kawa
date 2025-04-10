@@ -21,7 +21,7 @@ namespace kawa
 		}
 	};
 
-	inline void bit_prefab(scene& scene, entity& self)
+	inline void bit_prefab(entity& self)
 	{
 		self.emplace<UUID>().id;
 
@@ -30,6 +30,6 @@ namespace kawa
 		self.emplace<transform>(vec3{ 200,200, -1});
 		self.emplace<collider2d>(vec2{ 200,  200 });
 
-		self.emplace<script_component>().bind<bit_script>(scene, self);
+		self.emplace<script_component>().bind<bit_script>(self);
 	}
 }

@@ -51,12 +51,6 @@ namespace kawa
 	}
 
 	template<>
-	inline void deserealizer::parse(transform2d& dest)
-	{
-		_input >> dest.position.x >> dest.position.y;
-	}
-
-	template<>
 	inline void deserealizer::parse(sprite2d& dest)
 	{
 		std::string tex_name;

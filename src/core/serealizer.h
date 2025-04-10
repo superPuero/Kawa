@@ -60,11 +60,6 @@ namespace kawa
 	{
 		_output << "collider2d" << ' ' << obj.size.x << ' ' << obj.size.y << ' ' << obj.offset.x << ' ' << obj.offset.y << ' ';
 	}
-	template<>
-	inline void serealizer::process(transform2d& obj)
-	{
-		_output << "transform2d" << ' ' << obj.position.x << ' ' << obj.position.y << ' ';
-	}
 
 	template<>
 	inline void serealizer::process(sprite2d& obj)

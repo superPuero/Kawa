@@ -28,14 +28,14 @@ namespace main_menu
 		{
 			self.query(renderer2d_scripts::default_sprite_bundle_render);
 			
-			self.query(renderer2d_scripts::default_collider_render);
+			//self.query(renderer2d_scripts::default_true_collider_render);
 
 			//self.query(renderer2d_scripts::default_transform_marker_render);
 		}
 	};
 
 
-	inline void _main_menu_assets()
+	inline void _assets()
 	{
 		renderer::load_texture("assets/Modern UI Pack/Buttons/Normal/Play.png", "play_normal");
 		renderer::load_texture("assets/Modern UI Pack/Buttons/Highlighted/Play.png", "play_highlighted");
@@ -48,7 +48,7 @@ namespace main_menu
 
 	inline void prefab(kawa::scene& self)
 	{
-		_main_menu_assets();
+		_assets();
 
 		self.entity_from_prefab(play_button_prefab);
 		self.entity_from_prefab(home_button_prefab);

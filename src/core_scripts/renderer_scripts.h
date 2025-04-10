@@ -8,17 +8,12 @@ namespace kawa
 	{
 		static inline void default_transform_marker_render(transform& tr)
 		{
-			renderer::push_true_colored_quad(tr, { 10, 10, -1 }, { -5, -5, -1 }, { 0,0,0,0 });
-		}
-
-		static inline void default_collider_render(UUID& uuid, transform2d& tr, collider2d& cld) 
-		{
-			renderer::push_colored_quad({ 0,0,0,0 }, { tr.position.x + cld.offset.x  , tr.position.y + cld.offset.y, -1 }, { cld.size.x ,cld.size.y , -1 });
+			renderer::push_colored_quad(tr, { 10, 10, -1 }, { -5, -5, -1 }, { 0,0,0,0 });
 		}
 
 		static inline void default_true_collider_render(UUID& uuid, transform& tr, collider2d& cld)
 		{
-			renderer::push_true_colored_quad(tr, { cld.size.x, cld.size.y, -1 }, { cld.offset.x, cld.offset.y, -1 }, { 0,0,0,0 });
+			renderer::push_colored_quad(tr, { cld.size.x, cld.size.y, -1 }, { cld.offset.x, cld.offset.y, -1 }, { 0,0,0,0 });
 		}
 
 		static inline void default_text_render(transform& tr, text_component& tc)	
@@ -58,10 +53,11 @@ namespace kawa
 
 				renderer::push_textured_quad
 				(
-					renderer::textures["test_font"],
-					renderer::textures["test_font"].get_sub_texture_coords(vec2{6, 12}, curr_char_pos),
+					tr,
 					{ tr.position.x + pos * tc.size.x, tr.position.y, -1 },
-					{ tc.size.x, tc.size.y, -2 }
+					{ tc.size.x, tc.size.y, -2 },
+					renderer::textures["test_font"],
+					renderer::textures["test_font"].get_sub_texture_coords(vec2{6, 12}, curr_char_pos)
 				);
 
 				pos++;
@@ -70,13 +66,13 @@ namespace kawa
 
 		static inline void default_sprite_render(sprite2d& sp, transform& tr)
 		{
-			renderer::push_true_quad
+			renderer::push_textured_quad
 			(
-				sp.get_texture(),
-				sp.texture_coords,
+				tr,
 				{ sp.size.x, sp.size.y, -1 },
 				{ sp.offset.x, sp.offset.y, -1},
-				tr
+				sp.get_texture(),
+				sp.texture_coords
 			);
 		}
 					
@@ -92,13 +88,13 @@ namespace kawa
 			{
 				for (size_t j = 0; j < sp.map_width; j++)
 				{
-					renderer::push_true_quad
-					(
-						sp.tex_source,
-						sp.tile_texture_coords[j + (i * sp.map_width)],
+					renderer::push_textured_quad
+					(			
+						tr,
 						{ sp.tile_screen_size.x * j, sp.tile_screen_size.y * i, -1 },
 						{ sp.tile_screen_size.x, sp.tile_screen_size.y, 0 }	,
-						tr
+						sp.tex_source,
+						sp.tile_texture_coords[j + (i * sp.map_width)]
 					);
 				}
 			}

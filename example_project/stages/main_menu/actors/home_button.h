@@ -1,13 +1,11 @@
 #pragma once
-#pragma once
 #include "../../kawa.h"
 
 
-namespace kawa
+namespace main_menu
 {
-	BETTER_ENUM(play_button_frames, uint32_t, normal, highlighted, pressed);
-
-	struct play_button_script : script_component::script_base
+	using namespace kawa;
+	struct home_button_script : script_component::script_base
 	{
 		using script_base::script_base;
 
@@ -44,8 +42,8 @@ namespace kawa
 			{
 				hover_time += delta_time * 2;
 
-				tr.scale.x += delta_time * 2;
-				tr.scale.y += delta_time * 2;
+				tr.scale.x += delta_time* 2;
+				tr.scale.y += delta_time* 2;
 			}
 		}
 
@@ -61,8 +59,8 @@ namespace kawa
 			{
 				hover_time -= delta_time * 2;
 
-				tr.scale.x -= delta_time * 2;
-				tr.scale.y -= delta_time * 2;
+				tr.scale.x -= delta_time* 2;
+				tr.scale.y -= delta_time* 2;
 			}
 		}
 
@@ -79,7 +77,7 @@ namespace kawa
 
 				if (curr_transition_time >= transition_time)
 				{
-					cb.invoke();
+					application::application_instance->exit();
 					is_pressed = false;
 					curr_transition_time = 0;
 				}
@@ -105,20 +103,20 @@ namespace kawa
 		}
 	};
 
-	inline void play_button_prefab(scene& scene, entity& self)
+	inline void home_button_prefab(entity& self)
 	{
-		self.emplace<UUID>();
+		self.emplace<UUID>().id = self.id();
+
 		self.emplace<tag_component>(BUTTON);
-		self.emplace<transform>(vec3{ application::application_instance->_window.win_width / 2 , 600.0f , -1});
+
+		self.emplace<transform>(vec3{ application::application_instance->_window.win_width / 2 , 400.0f, -1 });
 		self.emplace<collider2d>(vec2{ 716,  160 }).make_centered();
 
-		self.emplace<callback_component>().bind([]() {application::application_instance->set_scene(1); std::cout << "here"; });
-
 		self.emplace<sprite2d_bundle>(3)
-			.put_centered(normal, &renderer::textures["play_normal"], vec2{ 716.0f, 160.0f }, renderer::textures["play_normal"].get_texture_coords())
-			.put_centered(highlighted, &renderer::textures["play_highlighted"], vec2{ 716.0f, 160.0f }, renderer::textures["play_highlighted"].get_texture_coords())
-			.put_centered(pressed, &renderer::textures["play_pressed"], vec2{ 716.0f, 160.0f },  renderer::textures["play_pressed"].get_texture_coords());
+			.put_centered(0, &renderer::textures["home_normal"], vec2{ 716.0f, 160.0f },renderer::textures["home_normal"].get_texture_coords())
+			.put_centered(1, &renderer::textures["home_highlighted"], vec2{ 716.0f, 160.0f }, renderer::textures["home_highlighted"].get_texture_coords())
+			.put_centered(2, &renderer::textures["home_pressed"], vec2{ 716.0f, 160.0f }, renderer::textures["home_pressed"].get_texture_coords());
 
-		self.emplace<script_component>().bind<play_button_script>(scene, self);
+		self.emplace<script_component>().bind<home_button_script>(self);
 	}
 }

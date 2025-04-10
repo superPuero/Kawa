@@ -20,7 +20,7 @@ namespace kawa
 		}
 	};
 
-	void asteroid_prefab(scene& context, entity& self)
+	void asteroid_prefab(entity& self)
 	{
 		self.emplace<UUID>();
 		auto& tr = self.emplace<transform>
@@ -29,14 +29,7 @@ namespace kawa
 				vec3{ 0, 0, cos(rand())}
 			);
 		 
-		self.emplace<physics2d>
-			(
-				vec2{},
-				vec2{},
-				1,
-				0,
-				false
-			);
+		self.emplace<physics2d>();
 
 		self.emplace<sprite2d>
 			(
@@ -46,7 +39,7 @@ namespace kawa
 				renderer::textures["asteroid"].get_texture_coords()
 			).make_centred();
 
-		self.emplace<script_component>().bind<asteroid_script>(context, self);
+		self.emplace<script_component>().bind<asteroid_script>(self);
 
 
 	}

@@ -25,11 +25,8 @@ namespace kawa
 	{
 	public:
 		static void init();
-		static void push_true_quad(const texture& texture, const std::array<vec2, 4>& texture_coords, const vec3& size, const vec3& offset, const transform& transform);
-		static void push_textured_quad(const texture& texture, const std::array<vec2, 4>& texture_coords, const vec3& pos, const vec3& offset);
-		static void push_true_colored_quad(const transform& transform, const vec3& size, const vec3& offset, const Color& color);
-		static void push_colored_quad(const Color& color, const vec3& pos, const vec3& offset);
-		static void push_colored_quad_2d(const Color& color, const vec2& pos, const vec2& offset);
+		static void push_textured_quad(const transform& transform, const vec3& size, const vec3& offset, const texture& texture, const std::array<vec2, 4>& texture_coords);
+		static void push_colored_quad(const transform& transform, const vec3& size, const vec3& offset, const Color& color);
 
 		static void draw();
 		static void shutdown();

@@ -14,7 +14,6 @@ namespace kawa
 		{
 			renderer::shader_map["test"].uniform_mat4("proj", (float*)&cc.proj);
 			renderer::shader_map["test"].uniform_mat4("view", (float*)&cc.view);
-
 		}
 
 		void on_update(float delta_time)
@@ -26,15 +25,14 @@ namespace kawa
 		}
 	};
 
-	inline void ortho_camera_prefab(scene& scene, entity& self)
+	inline void ortho_camera_prefab(entity& self)
 	{
 		self.emplace<UUID>().id = self.id();
 		self.emplace<camera_component>(glm::mat4{ 1.0f }, glm::mat4{ 1.0f });
 		self.emplace<transform>(vec3{ 0,0,-1 });
-		self.emplace<physics3d>(vec3{ 0,0,0 });
 
 		self.get<camera_component>().proj = glm::ortho(0.0f, (float)application::application_instance->_window.win_width, 0.0f, (float)application::application_instance->_window.win_height, 0.01f, 1000.0f);
 
-		self.emplace<script_component>().bind<ortho_camera_script>(scene, self);
+		self.emplace<script_component>().bind<ortho_camera_script>(self);
 	}
 }

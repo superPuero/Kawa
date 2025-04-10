@@ -54,7 +54,7 @@ namespace kawa
 		renderer::load_texture("assets/font/monogram-bitmap.png", "test_font");
 
 	}
-	void renderer::push_true_quad(const texture& texture, const std::array<vec2, 4>& texture_coords, const vec3& size, const vec3& offset, const transform& transform)
+	void renderer::push_textured_quad(const transform& transform, const vec3& size, const vec3& offset, const texture& texture, const std::array<vec2, 4>& texture_coords)
 	{
 
 		glm::mat4 mat_transform = transform.get_mat4();
@@ -80,30 +80,7 @@ namespace kawa
 		_index_occupied += 6;
 	};
 
-
-	void renderer::push_textured_quad(const texture& texture, const std::array<vec2, 4>& texture_coords, const vec3& pos, const vec3& offset)
-	{
-		auto data_ptr = _data_buffer + _data_occupied;
-		auto index_ptr = _index_buffer + _index_occupied;
-
-		new(data_ptr + 0) vertex{ { pos.x, pos.y, pos.z }, texture_coords[0], texture._handle_idx };
-		new(data_ptr + 1) vertex{ { pos.x + offset.x, pos.y, pos.z  }, texture_coords[1], texture._handle_idx };
-		new(data_ptr + 2) vertex{ { pos.x + offset.x, pos.y + offset.y , pos.z + offset.z }, texture_coords[2], texture._handle_idx };
-		new(data_ptr + 3) vertex{ { pos.x , pos.y + offset.y, pos.z + offset.z }, texture_coords[3], texture._handle_idx };
-
-		_data_occupied += 4;
-
-		new(index_ptr + 0) uint32_t(0 + _data_occupied - 4);
-		new(index_ptr + 1) uint32_t(2 + _data_occupied - 4);
-		new(index_ptr + 2) uint32_t(1 + _data_occupied - 4);
-		new(index_ptr + 3) uint32_t(0 + _data_occupied - 4);
-		new(index_ptr + 4) uint32_t(3 + _data_occupied - 4);
-		new(index_ptr + 5) uint32_t(2 + _data_occupied - 4);
-
-		_index_occupied += 6;
-	}
-
-	void renderer::push_true_colored_quad(const transform& transform, const vec3& size, const vec3& offset, const Color& color)
+	void renderer::push_colored_quad(const transform& transform, const vec3& size, const vec3& offset, const Color& color)
 	{
 		glm::mat4 mat_transform = transform.get_mat4();
 
@@ -128,53 +105,8 @@ namespace kawa
 		_index_occupied += 6;
 	}
 
-	void renderer::push_colored_quad(const Color& color, const vec3& pos, const vec3& offset)
-	{
 
-		auto data_ptr = _data_buffer + _data_occupied;
-		auto index_ptr = _index_buffer + _index_occupied;
-
-		new(data_ptr + 0) vertex{ { pos.x, pos.y, pos.z }, vec2{ 0.0f, 0.0f }, 0 };
-		new(data_ptr + 1) vertex{ { pos.x + offset.x, pos.y, pos.z  }, vec2{ 1.0f, 0.0f }, 0};
-		new(data_ptr + 2) vertex{ { pos.x + offset.x, pos.y + offset.y , pos.z + offset.z }, vec2{ 1.0f, 1.0f }, 0};
-		new(data_ptr + 3) vertex{ { pos.x , pos.y + offset.y, pos.z + offset.z }, vec2{ 0.0f, 1.0f }, 0 };
-
-		_data_occupied += 4;
-
-		new(index_ptr + 0) uint32_t(0 + _data_occupied - 4);
-		new(index_ptr + 1) uint32_t(2 + _data_occupied - 4);
-		new(index_ptr + 2) uint32_t(1 + _data_occupied - 4);
-		new(index_ptr + 3) uint32_t(0 + _data_occupied - 4);
-		new(index_ptr + 4) uint32_t(3 + _data_occupied - 4);
-		new(index_ptr + 5) uint32_t(2 + _data_occupied - 4);
-
-		_index_occupied += 6;
-	}
-
-
-	void renderer::push_colored_quad_2d(const Color& color, const vec2& pos, const vec2& offset)
-	{
-		auto data_ptr = _data_buffer + _data_occupied;
-		auto index_ptr = _index_buffer + _index_occupied;
-
-		new(data_ptr + 0) vertex{ { pos.x, pos.y, -1 }, vec2{ 0.0f, 0.0f }, 0 };
-		new(data_ptr + 1) vertex{ { pos.x + offset.x, pos.y, -1  }, vec2{ 1.0f, 0.0f }, 0 };
-		new(data_ptr + 2) vertex{ { pos.x + offset.x, pos.y + offset.y , -1 }, vec2{ 1.0f, 1.0f }, 0 };
-		new(data_ptr + 3) vertex{ { pos.x , pos.y + offset.y, -1 }, vec2{ 0.0f, 1.0f }, 0 };
-
-		_data_occupied += 4;
-
-		new(index_ptr + 0) uint32_t(0 + _data_occupied - 4);
-		new(index_ptr + 1) uint32_t(2 + _data_occupied - 4);
-		new(index_ptr + 2) uint32_t(1 + _data_occupied - 4);
-		new(index_ptr + 3) uint32_t(0 + _data_occupied - 4);
-		new(index_ptr + 4) uint32_t(3 + _data_occupied - 4);
-		new(index_ptr + 5) uint32_t(2 + _data_occupied - 4);
-
-		_index_occupied += 6;
-	}
-
-	void renderer::draw()
+void renderer::draw()
 	{
 
 

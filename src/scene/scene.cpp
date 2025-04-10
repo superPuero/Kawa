@@ -19,7 +19,6 @@ namespace kawa
             {
                 s.append("entity");
                 s.process_if_exsist(e.get_if_has<UUID>());
-                s.process_if_exsist(e.get_if_has<transform2d>());
                 s.process_if_exsist(e.get_if_has<collider2d>());
                 s.process_if_exsist(e.get_if_has<sprite2d>());
                 s.process_if_exsist(e.get_if_has<sprite2d_bundle>());
@@ -38,7 +37,7 @@ namespace kawa
         {
             if (d.is_current("entity"))
             {
-                e = new entity(_ctx);
+                e = new entity(_ctx, *this);
 
                 auto id = e->emplace<UUID>().id;
 
@@ -47,11 +46,6 @@ namespace kawa
                 delete e;
 
                 e = &_entity_container.at(id);
-            }
-
-            else if (d.is_current("transform2d"))
-            {
-                d.parse(e->emplace<transform2d>());
             }
 
             else if (d.is_current("camera_component"))
@@ -76,7 +70,7 @@ namespace kawa
 
             else if (d.is_current("script_component"))
             {
-                d.parse(e->emplace<script_component>(), *this, *e);
+                d.parse(e->emplace<script_component>(), *e);
             }
         }
     }

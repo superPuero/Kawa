@@ -96,15 +96,15 @@ namespace kawa
             return _ctx;
         }
 
-        inline scene& entity_from_prefab(void(prefab_func)(scene&, entity&)) noexcept
+        inline scene& entity_from_prefab(void(prefab_func)(entity&)) noexcept
         {
-            auto e = entity(_ctx);
+            auto e = entity(_ctx, *this);
 
             auto id = e.id();
 
             _entity_container.emplace(id, std::move(e));
 
-            prefab_func(*this, _entity_container.at(id));
+            prefab_func(_entity_container.at(id));
 
             return *this;
         }

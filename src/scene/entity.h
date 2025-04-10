@@ -7,11 +7,14 @@
 
 namespace kawa
 {
+	class scene;
+
 	class entity
 	{
 	public:
-		inline entity(ssr::dynamic_registry& s) noexcept
-			: _ctx(s)
+		inline entity(ssr::dynamic_registry& ctx, scene& s) noexcept
+			: _ctx(ctx)
+			, _scene_ctx(s)			
 		{
 			_id = _ctx.entity();
 
@@ -24,7 +27,8 @@ namespace kawa
 
 		inline entity(entity&& other) noexcept
 			: _ctx(other._ctx)
-			, _id(other._id)
+			, _scene_ctx(other._scene_ctx)
+			, _id(other._id) 
 		{
 			other._id = ssr::nullent;
 		}
@@ -92,9 +96,14 @@ namespace kawa
 			return _id;
 		}
 
+		[[nodiscard]] inline scene& get_scene()
+		{
+			return _scene_ctx;
+		}
+
 	public:
 		ssr::dynamic_registry& _ctx;
-
+		scene& _scene_ctx;
 		ssr::entity_id _id;
 
 	};

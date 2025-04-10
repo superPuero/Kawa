@@ -4,7 +4,7 @@
 
 namespace kawa
 {
-	inline void background_prefab(scene& context, entity& self)
+	inline void background_prefab(entity& self)
 	{
 		self.emplace<UUID>();
 		self.emplace<transform>(vec3{ application::application_instance->_window.win_width/2, application::application_instance->_window.win_height/2, -1 });
