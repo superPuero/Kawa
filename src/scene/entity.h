@@ -1,7 +1,8 @@
 #pragma once
 
-#include "../core/data_structures/dynamic_registry.h"
-#include "../core/data_structures/ssrutils.h"
+//#include "../core/data_structures/dynamic_registry.h"
+//#include "../core/data_structures/ssrutils.h"
+#include "../core/ecs/dynamic_registry.h"
 
 #include "../debug/debug.h"
 
@@ -12,13 +13,13 @@ namespace kawa
 	class entity
 	{
 	public:
-		inline entity(ssr::dynamic_registry& ctx, scene& s) noexcept
+		inline entity(ecs::dynamic_registry& ctx, scene& s) noexcept
 			: _ctx(ctx)
 			, _scene_ctx(s)			
 		{
 			_id = _ctx.entity();
 
-			if (_id == ssr::nullent)
+			if (_id == ecs::nullent)
 			{
 				KW_LOG_ERROR("bad entity");
 			}		
@@ -30,15 +31,15 @@ namespace kawa
 			, _scene_ctx(other._scene_ctx)
 			, _id(other._id) 
 		{
-			other._id = ssr::nullent;
+			other._id = ecs::nullent;
 		}
 
 		inline ~entity() noexcept
 		{
-			if (_id != ssr::nullent)
+			if (_id != ecs::nullent)
 			{
 				_ctx.destroy(_id);
-				KW_LOG("Destroyed entity: ", _id);
+				KW_LOG("Destroyed entity:", _id);
 			}
 		}
 
@@ -80,18 +81,25 @@ namespace kawa
 			return _ctx.get_if_has<T>(_id);
 		}
 
+		inline entity& apply_prefab(void(prefab)(entity&)) noexcept
+		{
+			prefab(*this);
+
+			return *this;
+		}
+
 		template<typename T>
 		[[nodiscard]] inline bool has() noexcept
 		{
 			return _ctx.has<T>(_id);
 		}
 
-		[[nodiscard]] inline ssr::dynamic_registry& get_ctx() noexcept
+		[[nodiscard]] inline ecs::dynamic_registry& get_ctx() noexcept
 		{
 			return _ctx;
 		}
 
-		[[nodiscard]] inline ssr::entity_id id() const noexcept
+		[[nodiscard]] inline ecs::entity_id id() const noexcept
 		{
 			return _id;
 		}
@@ -102,9 +110,9 @@ namespace kawa
 		}
 
 	public:
-		ssr::dynamic_registry& _ctx;
+		ecs::dynamic_registry& _ctx;
 		scene& _scene_ctx;
-		ssr::entity_id _id;
+		ecs::entity_id _id;
 
 	};
 

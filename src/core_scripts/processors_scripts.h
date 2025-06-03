@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../core/components.h"
+#include "../core/components/components.h"
 
 namespace kawa
 {
@@ -26,6 +26,25 @@ namespace kawa
 
 			tr.position.x += phys.velocity.x * delta_time;
 			tr.position.y += phys.velocity.y * delta_time;
+
+		}
+
+		inline void button_component_update(float delta_time, transform& tr, collider2d& col, button_component& bc)
+		{
+			button_component::process(tr, col, bc);
+			bc.update(delta_time);
+		}
+
+		inline void camera_processor(float delta_time, transform& tr, proj_camera_component& cc)
+		{
+			if(cc.primary)
+			{ 
+				cc.view = glm::inverse(tr.get_mat4());
+
+				renderer::shader_map["test"].uniform_mat4("proj", (float*)&cc.proj);
+				renderer::shader_map["test"].uniform_mat4("view", (float*)&cc.view);			
+			}
+
 		}
 	}
 }

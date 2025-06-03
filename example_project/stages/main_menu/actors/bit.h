@@ -4,10 +4,10 @@
 
 namespace kawa
 {
-	struct bit_script : script_component::script_base
+	KW_SCRIPT_DECL(bit_script)
 	{
-		using script_base::script_base;
-
+		KW_SCRIPT_HEADER();
+		
 		transform& tr = self.get<transform>();
 
 		void on_create()
@@ -17,7 +17,11 @@ namespace kawa
 
 		void on_update(float delta_time)
 		{
-			application::application_instance->_window.get_mouse_pos(tr.position.x, tr.position.y);
+			vec3 mouse_pos{ 0,0,-1 };
+
+			app::instance().window.get_mouse_pos(mouse_pos.x, mouse_pos.y);
+
+			tr.set_position(mouse_pos);
 		}
 	};
 
@@ -30,6 +34,6 @@ namespace kawa
 		self.emplace<transform>(vec3{ 200,200, -1});
 		self.emplace<collider2d>(vec2{ 200,  200 });
 
-		self.emplace<script_component>().bind<bit_script>(self);
+		self.emplace<script_component>(&self).bind<bit_script>();
 	}
 }

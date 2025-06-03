@@ -3,9 +3,11 @@
 
 namespace kawa
 {
-	struct asteroid_script : script_component::script_base
+	//struct asteroid_script : script_component::script_base<asteroid_script>
+	KW_SCRIPT_DECL(asteroid_script)
 	{
-		using script_base::script_base;
+		//using script_base::script_base;
+		KW_SCRIPT_HEADER();
 
 		bool is_dead = false;
 
@@ -18,6 +20,16 @@ namespace kawa
 		{
 			
 		}
+
+		void _serealize(serealizer& ser)
+		{
+			ser._output << typeid(asteroid_script).hash_code() << ' ';
+		}
+		void _deserealize(deserealizer& deser)
+		{
+
+		}
+
 	};
 
 	void asteroid_prefab(entity& self)
@@ -25,22 +37,21 @@ namespace kawa
 		self.emplace<UUID>();
 		auto& tr = self.emplace<transform>
 			(
-				vec3{rand()%application::window_instange->win_width, rand() % application::window_instange->win_height, -1}	,
+				vec3{rand()%5, rand() % 5, -1}	,
 				vec3{ 0, 0, cos(rand())}
 			);
 		 
-		self.emplace<physics2d>();
+		//self.emplace<physics2d>();
 
 		self.emplace<sprite2d>
 			(
 				&renderer::textures["asteroid"],
-				vec2{ 96 * 2, 96 * 2},
+				vec2{ 0.5, 0.5 },
 				vec2{},
 				renderer::textures["asteroid"].get_texture_coords()
 			).make_centred();
 
-		self.emplace<script_component>().bind<asteroid_script>(self);
-
+		self.emplace<script_component>(&self).bind<asteroid_script>();
 
 	}
 }

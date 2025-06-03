@@ -2,48 +2,31 @@
 
 #include "entity.h"
 
-#include "../core/data_structures/dynamic_registry.h"
-#include "../core/data_structures/ssrutils.h"
+#include "../core/ecs/dynamic_registry.h"
+#include "../core/data_structures/dyn_array.h"
 
-#include "../core/components.h"
+//#include "../core/components/components.h"
 
-#include "scene_logic_body.h"    
+#include "scene_base.h"    
+
 
 namespace kawa
 {
-    class scene
+    class scene : public scene_base
     {
     public:
-
         scene()
-            : _ctx(1000000)
+            : _ctx(0xFFFF) 
         {
-
         }
 
-        ~scene()
-        {
-            _logic_body_deleter(_scene_logic_body);
-        }
+        ~scene() = default;
 
     public:
-
-        void on_update(float delta_time) noexcept
-        {
-            on_update_func(_scene_logic_body, delta_time);
-        }
-        void on_create() noexcept
-        {
-            on_create_func(_scene_logic_body);
-        }
-        void on_render() noexcept
-        {
-            on_render_func(_scene_logic_body);
-        }
             
-        inline void fetch_remove(ssr::entity_id id) noexcept
+        inline void fetch_remove(ecs::entity_id id) noexcept
         {
-            _to_clear.push_back(id);
+            _to_clear.emplace_back(id);
         }
 
         template<typename Script, typename...Args>
@@ -53,7 +36,7 @@ namespace kawa
         }
 
         template<typename Script, typename...Args>
-        inline void query_with(ssr::entity_id id, Script&& script, Args&&...args) noexcept
+        inline void query_with(ecs::entity_id id, Script&& script, Args&&...args) noexcept
         {
             _ctx.query_with(id, std::forward<Script>(script), std::forward<Args>(args)...);
         }
@@ -86,17 +69,21 @@ namespace kawa
             _to_clear.clear();
         }
 
-        inline void prefab(void(prefab_func)(scene&)) noexcept
+        inline scene& prefab(void(prefab_func)(scene&)) noexcept
         {
             prefab_func(*this);
+
+            return *this;
         }                     
 
-        inline ssr::dynamic_registry& get_ctx()
+        inline ecs::dynamic_registry& get_ctx()
         {
             return _ctx;
         }
 
-        inline scene& entity_from_prefab(void(prefab_func)(entity&)) noexcept
+        template<typename...EntityPrefabFn>
+            requires (std::same_as<EntityPrefabFn, void(*)(entity&)> && ...)
+        inline entity& entity_from_prefabs(EntityPrefabFn...prefabs) noexcept
         {
             auto e = entity(_ctx, *this);
 
@@ -104,58 +91,42 @@ namespace kawa
 
             _entity_container.emplace(id, std::move(e));
 
-            prefab_func(_entity_container.at(id));
+            ((prefabs(_entity_container.at(id))),...);
 
-            return *this;
-        }
-
-        template<typename SceneScriptBody>
-        inline void bind()
-        {
-            _scene_logic_body = new SceneScriptBody{ *this };
-
-            _logic_body_deleter = [](void* script)
-                {
-                    delete static_cast<SceneScriptBody*>(script);
-                };
-
-            on_create_func = [](void* script)
-                {
-                    static_cast<SceneScriptBody*>(script)->on_create();
-                };
-
-            on_update_func = [](void* script, float delta_time)
-                {
-                    static_cast<SceneScriptBody*>(script)->on_update(delta_time);
-                };
-
-            on_render_func = [](void* script)
-                {
-                    static_cast<SceneScriptBody*>(script)->on_render();
-                };
-
-            on_create_func(_scene_logic_body);
-
+            return _entity_container.at(id);
         }
 
         void serealize(const char* name);
-
-        void load(const char* filepath);
+        void deserealize(const char* filepath);
 
     public:
-        ssr::dynamic_registry _ctx;
-        std::vector<uint64_t> _to_clear;
+        ecs::dynamic_registry _ctx;
+        dyn_array<uint64_t> _to_clear;
 
     private:
         std::unordered_map<uint64_t, entity> _entity_container;
 
-        void* _scene_logic_body;
-
-        void(*on_update_func)(void*, float);
-        void(*on_create_func)(void*);
-        void(*on_render_func)(void*);
-
-        void(*_logic_body_deleter)(void*);
+        friend bindable<scene>;
     };
+
+    template<>
+    template<typename SceneScriptBody>
+    void bindable<scene>::bind_impl(scene& _cnt)
+    {
+        _cnt._on_create_fn = [](void* body)
+            {
+                static_cast<SceneScriptBody*>(body)->on_create();
+            };
+
+        _cnt._on_update_fn = [](void* body, float delta_time)
+            {
+                static_cast<SceneScriptBody*>(body)->on_update(delta_time);
+            };
+
+        _cnt._on_render_fn = [](void* body)
+            {
+                static_cast<SceneScriptBody*>(body)->on_render();
+            };
+    }
 }
 

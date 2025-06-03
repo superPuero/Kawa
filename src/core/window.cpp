@@ -1,27 +1,44 @@
 #include <iostream>                
 #include "window.h"
+#include "../debug/debug.h"
 
 namespace kawa
 {
-    window::window(uint32_t width, uint32_t height, const char* name)
+    window::window(const spec& s)
     {
+        KW_LOG("Initializing window");
+        KW_LOG("Name:", s.name);
+        KW_LOG("Width:", s.width);
+        KW_LOG("Height:", s.height);
+
+        std::boolalpha(std::cout);
+        KW_LOG("Vsync:", s.vsync);
+        std::noboolalpha(std::cout);
+
+        _width = s.width;
+        _height = s.height;
+        _name = s.name;
+
         glfwInit();
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-        //glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+        if(s.vsync)
+        { 
+            glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_TRUE);
+        }
 
-        _window = glfwCreateWindow(width, height, name, NULL, NULL);
+        _window = glfwCreateWindow(_width, _height, _name.c_str(), NULL, NULL);
 
         glfwMakeContextCurrent(_window);
 
-        glfwSwapInterval(1);
+        if(s.vsync)
+        { 
+            glfwSwapInterval(1);
+        } 
 
         gladLoadGL();
-
-        win_width = width;
-        win_height = height;
 
         glfwSetWindowSizeCallback(_window, &resize_callback);
     }
@@ -60,23 +77,20 @@ namespace kawa
 
     void window::get_mouse_pos(float& x, float& y)
     {
-        double t_x;
-        double t_y;
+        double tx, ty;
+        glfwGetCursorPos(_window, &tx, &ty);
 
-        glfwGetCursorPos(_window, &t_x, &t_y);
-
-        x = t_x;
-        y = (t_y - win_height) * -1;
-
+        x = tx;
+        y = ty;
     }
     void window::set_cursor_pos(double x, double y)
     {
-        glfwSetCursorPos(_window, x + win_width / 2, y + win_height / 2);
+        glfwSetCursorPos(_window, x, y);
     }
 
     bool window::window_should_close()
     {
-        return !glfwWindowShouldClose(_window);
+        return glfwWindowShouldClose(_window);
     }
 
     double window::time()
@@ -96,7 +110,7 @@ namespace kawa
 
     void window::resize_callback(GLFWwindow* window, int width, int height)
     {
-        //win_width = width;
+        //win_height = width;
         //win_height = height;
     }
 }

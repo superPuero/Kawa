@@ -1,7 +1,7 @@
 #include "src/core/macros.h"
 #include "src/core/window.h"
-#include "src/core/application.h"
-#include "src/core/components.h"
+#include "src/core/app.h"
+#include "src/core/components/components.h"
 #include "src/core/serealizer.h"
 #include "src/core/deserealizer.h"
 #include "src/core/log/log.h"
@@ -12,6 +12,8 @@
 
 #include "src/scene/entity.h"
 #include "src/scene/scene.h"
+
+#include "src/core/archetypes.h"
 
 #include "src/utils/utils.h"
 

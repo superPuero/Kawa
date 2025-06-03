@@ -1,16 +1,31 @@
 #pragma once
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
+#include "../debug/debug.h"
 
 namespace kawa
 {
+	struct spec
+	{
+		std::string name = "Default";
+		uint32_t width = 1200;
+		uint32_t height = 800;
+		bool vsync = true;
+	};
+
 	class window
 	{
 	public:
-		window(uint32_t width, uint32_t height, const char* name);				
+		window(const spec& s);
 		~window();
 
 	public:
+		inline uint32_t get_width() const noexcept
+		{
+			return _width;
+		}
+		inline uint32_t get_height() const noexcept { return _height; };
+
 		void close();
 		bool is_key_down(int key);
 		bool is_mouse_button_press(int mouse_button);
@@ -26,8 +41,9 @@ namespace kawa
 
 
 	public:
-		uint32_t win_height;
-		uint32_t win_width;
+		uint32_t _height;
+		uint32_t _width;
+		std::string _name;
 
 		GLFWwindow* _window;
 	private:

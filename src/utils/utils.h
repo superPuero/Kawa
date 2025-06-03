@@ -13,9 +13,41 @@ typedef glm::vec3 vec3;
 namespace kawa
 {
     template<typename T>
-    T& as(void* ptr)
+    inline T lerp(const T& start, const T& end, float delta, float (easin_fn)(float))
+    {
+        return start + (end - start) * easin_fn(delta);
+    }
+
+    inline float ease_in_quad(float t) 
+    {
+        return t * t;
+    }
+
+    inline float ease_in_out_sine(float t) 
+    {
+        return -0.5f * (std::cos(3.1415 * t) - 1.0f);
+    }
+
+    template<typename T>
+    inline constexpr T& as(void* ptr) noexcept
     {
         return *static_cast<T*>(ptr);
+    }
+
+    template<typename T>
+    inline const char* type_name() noexcept
+    {
+        return typeid(T).name();
+    }
+
+    template<typename T>
+    inline size_t static_type_id() noexcept
+    {
+        static size_t counter = 0;
+
+        static size_t id = counter++;
+
+        return id;
     }
 
     constexpr glm::vec3 up_vec = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -39,11 +71,4 @@ namespace kawa
 
         return buffer;
 	}
-
-    struct vertex
-    {
-        glm::vec3 position;
-        glm::vec2 texture_coords;
-        int texture_id;       
-    };
 }
